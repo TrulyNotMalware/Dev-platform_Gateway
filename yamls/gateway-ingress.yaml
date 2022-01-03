@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: Dev-platform-gateway-ingress
+  namespace: dev-project
+  labels:
+    app: Dev-platform-gateway
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "70000"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+#    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: test.dev-platform.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: Dev-platform-gateway-svc
+              servicePort: 8080

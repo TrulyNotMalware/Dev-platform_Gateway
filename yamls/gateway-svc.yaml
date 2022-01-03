@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev-project
+  labels:
+    app: Dev-platform-gateway
+  name: Dev-platform-gateway-svc
+spec:
+  selector:
+    app: Dev-platform-gateway
+  ports:
+    - name: Dev-platform-gateway-svc
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  type: ClusterIP
