@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.google.cloud.tools.jib' version '2.1.0'
 }
 
 group = 'com.spring.cloud.gateway'
@@ -19,7 +20,7 @@ repositories {
 }
 
 
-ext['log4j2.version'] = '2.17.0'
+ext['log4j2.version'] = '2.17.1'
 ext {
     set('springCloudVersion', "2021.0.0")
 }
@@ -43,4 +44,19 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+}
+
+jib {
+    from {
+        image = "openjdk:8-jdk-alpine"
+    }
+    to {
+        image = "Devpjt/gateway"
+        tags = ["latest", "${project.name}-${project.version}".toString()]
+    }
+    container {
+        volumes = ["/tmp"]
+        jvmFlags = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9999"]
+        ports = ['8080']
+    }
 }
