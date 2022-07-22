@@ -1,6 +1,6 @@
 server:
   port: 8080
-
+---
 logging:
   file:
     name: devPlatformGateway.log
@@ -12,8 +12,16 @@ logging:
         cloud:
           gateway: DEBUG
 ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,loggers,metrics,mappings,conditions,info"
+---
 spring:
   cloud:
+    kubernetes:
+      enabled: false
     gateway:
       default-filters:
         - name: GlobalFilter
@@ -26,8 +34,15 @@ spring:
           predicates:
             - Path=lb://webui/**
           filters:
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/fallback
             - name: UserFilter
               args:
                 baseMessage: Spring Cloud Gateway UserFilter
                 preLogger: true
                 postLogger: true
+          metadata:
+            connect-timeout: 2500
+            response-timeout: 2500
